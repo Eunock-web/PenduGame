@@ -13,4 +13,25 @@ class Game {
     stdout.write(ANSI_HOME_CURSOR);
   }
 
+  //Fonction pour centrer un texte horizontalement
+  String CenterText(String text) {
+    /**
+       * Cette fonction prends en parametre un texte et calcule la largeur de la console moins la longueur du mot sur deux pour trover la position du texte dans la console
+       * @param text
+       * @return String
+    */
+
+    //Largeur de la console
+    final TerminalWidth = stdout.terminalColumns;
+
+    //Longueur du mot
+    final TextLength = text.length;
+
+    //Position du texte
+    final Position = (TerminalWidth - TextLength) ~/ 2;
+
+    //Créer la chaine d'espacements puis l'ajouter au texte
+    final spaces = ' ' * Position;
+    return '$spaces$text';
+  }
 }
