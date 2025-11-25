@@ -99,4 +99,40 @@ class Game {
     print(CenterText("|  3 -Quitter                 |"));
     print(CenterText(" -----------------------------"));
   }
+
+  /**
+   * Fonction pour gerer le menu
+   */
+  void GestionMenu() {
+    print(
+      "Veuillez choisir une option. De preferance entrez un nombre entre 1 et 3.",
+    );
+    String? choix = stdin.readLineSync();
+
+    if (choix == null || choix.isEmpty) {
+      print("Veuillez choisir une option valide s'il vous plait.");
+      Menu();
+      return GestionMenu();
+    }
+
+    switch (choix) {
+      case "1":
+        clearConsole();
+        DemarrerJeu();
+        break;
+      case "2":
+        clearConsole();
+        print("Tutoriel");
+        break;
+      case "3":
+        clearConsole();
+        print("Au revoir");
+        sleep(Duration(seconds: 3));
+        break;
+      default:
+        print("Option invalide. Veuillez choisir une option valide.\n");
+        clearConsole();
+        return GestionMenu();
+    }
+  }
 }
