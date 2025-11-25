@@ -1,11 +1,14 @@
 import 'dart:io';
+import 'dart:math';
 
 class Game {
   String ANSI_CLEAR_SCREEN = '\x1B[2J'; //Effacer l'écran de la console
-  String ANSI_HOME_CURSOR = '\x1B[H'; //Deplacer curseur à la position d'origine(Hat-Gauche)
+  String ANSI_HOME_CURSOR =
+      '\x1B[H'; //Deplacer curseur à la position d'origine(Hat-Gauche)
   String ANSI_BOLD = '\x1B[1m'; //Texte en gras
   final String nomJeu = "HANGMAN";
   String nomJoueur = "";
+  List<String> lettres = ["", "", "", "", ""];
 
   //Fonction pour effacer la console
   void clearConsole() {
@@ -54,6 +57,47 @@ class Game {
     return input!;
   }
 
+  //Fonction pour generer un mot devine
+  /**
+   * Cette fonction genere un mot devine de 5 lettres
+   * @return String
+   */
+  String MotDevine(){
+    for (var i = 0; i < 5; i++) {
+      lettres[i] = genererLettreAleatoire(majuscule: true);
+    }
+    return lettres.join();
+  }
+
+  //Fonction pour generer une lettre aleatoire
+  /**
+   * Cette fonction genere une lettre aleatoire
+   * @param majuscule
+   * @return String
+   */
+  String genererLettreAleatoire({bool majuscule = false}) {
+  final random = Random();
+  int min, max;
+  
+  if (majuscule) {
+    min = 65; // 'A'
+    max = 90; // 'Z'
+  } else {
+    min = 97; // 'a'
+    max = 122; // 'z'
+  }
+  
+  // La fonction nextInt(n) génère un nombre entre 0 (inclus) et n (exclus).
+  // Donc, pour une plage de 26 lettres, on utilise random.nextInt(26).
+  final codeASCII = min + random.nextInt(max - min + 1);
+  
+  return String.fromCharCode(codeASCII);
+}
+
+  void updateLettre(String lettre){
+    
+  }
+
   /**
    * Cette fonction demande le nom du joueur et l'enregistre dans une variable
    * @param nom
@@ -91,7 +135,7 @@ class Game {
   void DemarrerJeu() {
     sleep(Duration(seconds: 1));
     print(CenterText("Bienvenu dans le jeu"));
-    sleep(Duration(seconds: 3));
+    sleep(Duration(seconds: 2));
     clearConsole();
     afficherJeux();
   }
@@ -138,7 +182,7 @@ class Game {
       case "3":
         clearConsole();
         print("Au revoir");
-        sleep(Duration(seconds: 3));
+        sleep(Duration(seconds: 2));
         break;
       default:
         print("Option invalide. Veuillez choisir une option valide.\n");
@@ -147,6 +191,27 @@ class Game {
     }
   }
 
+  void LogiqueJeu() {
+    prompt("Deviner la lettre");
+    String? lettre = stdin.readLineSync();
+    if (lettre == null) {
+      print("Veuillez entrez une lettre valide");
+    }else{
+        String lettredeviner = lettre.toUpperCase();
 
+          for( lettres in lettre ){
+            if( lettre == lettredeviner ){
+              updateLettre(lettre);
+            }
+          }
+    }
+  }
 
+}
+
+void main() {
+  Game promptManager = Game();
+
+  promptManager.Menu();
+  promptManager.GestionMenu();
 }
