@@ -86,6 +86,17 @@ class Game {
   }
 
   /**
+   * Fonction pour demarrer le jeu
+   */
+  void DemarrerJeu() {
+    sleep(Duration(seconds: 1));
+    print(CenterText("Bienvenu dans le jeu"));
+    sleep(Duration(seconds: 3));
+    clearConsole();
+    afficherJeux();
+  }
+
+  /**
    * Fonction pour afficher le Menu
    */
   void Menu() {
@@ -135,4 +146,7 @@ class Game {
         return GestionMenu();
     }
   }
+
+
+
 }
