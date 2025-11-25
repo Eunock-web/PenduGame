@@ -85,4 +85,18 @@ class Game {
     print(CenterText(nomJeu));
   }
 
+  /**
+   * Fonction pour afficher le Menu
+   */
+  void Menu() {
+    print(CenterText(" -----------------------------"));
+    print(CenterText("|            Menu             |"));
+    print(CenterText(" -----------------------------"));
+    print(CenterText("|  1- Demarrer Jeu            |"));
+    print(CenterText("|                             |"));
+    print(CenterText("|  2- Tutoriel                |"));
+    print(CenterText("|                             |"));
+    print(CenterText("|  3 -Quitter                 |"));
+    print(CenterText(" -----------------------------"));
+  }
 }
