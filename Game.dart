@@ -34,4 +34,41 @@ class Game {
     final spaces = ' ' * Position;
     return '$spaces$text';
   }
+
+  /**
+   * Fonction pour demander une lettre à l'utilisateur
+   * @param message
+   * @return String
+   */
+  String prompt(String message) {
+    stdout.write(message);
+
+    String? input = stdin.readLineSync();
+
+    while (input?.length != 1) {
+      clearConsole();
+      print("Veuillez entrer une seule lettre.");
+      input = stdin.readLineSync();
+    }
+
+    return input!;
+  }
+
+  /**
+   * Cette fonction demande le nom du joueur et l'enregistre dans une variable
+   * @param nom
+   * @return String
+   */
+  String DemanderNomJoueur(String nom) {
+    stdout.write("Veuillez entrez votre nom Joueur : ");
+    nom = stdin.readLineSync()!;
+
+    //Si il saisi une espace ou une chaine vide, on redemande
+    if (nom.isEmpty) {
+      print("Veuillez entrer un nom valide. \n");
+      return DemanderNomJoueur(nom);
+    }
+
+    return nom;
+  }
 }
