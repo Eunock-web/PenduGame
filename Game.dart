@@ -71,4 +71,18 @@ class Game {
 
     return nom;
   }
+
+  /**
+   * Fonction pour afficher le Jeux complet
+   */
+  void afficherJeux() {
+    clearConsole();
+    nomJoueur = DemanderNomJoueur(nomJoueur);
+    clearConsole();
+    print("Joueur:${nomJoueur}");
+    stdout.write(ANSI_BOLD);
+    sleep(Duration(seconds: 1));
+    print(CenterText(nomJeu));
+  }
+
 }
