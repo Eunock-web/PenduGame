@@ -11,7 +11,7 @@ class Game {
   List<String> lettreinitiales = [" * ", " * ", " * ", " * ", " * "];
   static int Score = 5;
   String message = " ";
-    String motSecretActuel = "";
+  String motSecretActuel = "";
   List<String> motSecretListe = [];
   List<String> lettresProposees = [];
 
@@ -109,7 +109,7 @@ class Game {
    * @param lettre
    * @return String
    */
-List<String> updateLettre(String lettre) {
+  List<String> updateLettre(String lettre) {
     // Convertir la lettre en majuscule pour comparaison
     String lettreUpperCase = lettre.toUpperCase();
 
@@ -120,6 +120,7 @@ List<String> updateLettre(String lettre) {
       if (motSecretListe[i] == lettreUpperCase) {
         lettreinitiales[i] = lettreUpperCase;
         lettreValide = true;
+        Score = Score;
       }
     }
 
@@ -135,6 +136,7 @@ List<String> updateLettre(String lettre) {
 
     return lettreinitiales;
   }
+
   /**
    * Cette fonction demande le nom du joueur et l'enregistre dans une variable
    * @param nom
@@ -272,121 +274,122 @@ List<String> updateLettre(String lettre) {
     }
   }
 
-void LogiqueJeu() {
-  // Générer le mot secret une seule fois au début
-  motSecretActuel = MotDevine();
-  motSecretListe = ListMotdevine(motSecretActuel);
-  
-  // Réinitialiser les variables du jeu
-  lettreinitiales = [" * ", " * ", " * ", " * ", " * "];
-  lettresProposees = [];
-  Score = 5;
-  
-  // Afficher le cadre initial
-  afficherCadre();
-  
-  // Boucle principale du jeu
-  while (Score > 0) {
-    // Vérifier si le joueur a gagné (tous les * sont remplacés)
-    bool gagne = true;
-    for (var i = 0; i < lettreinitiales.length; i++) {
-      if (lettreinitiales[i] == " * ") {
-        gagne = false;
+  void LogiqueJeu() {
+    // Générer le mot secret une seule fois au début
+    motSecretActuel = "LIGHT".toUpperCase();
+    motSecretListe = ListMotdevine(motSecretActuel);
+
+    // Réinitialiser les variables du jeu
+    lettreinitiales = [" * ", " * ", " * ", " * ", " * "];
+    lettresProposees = [];
+    Score = 5;
+
+    // Afficher le cadre initial
+    afficherCadre();
+
+    // Boucle principale du jeu
+    for (int i = 0; i < Score; i++) {
+      // Vérifier si le joueur a gagné (tous les * sont remplacés)
+      bool gagne = true;
+      for (var i = 0; i < lettreinitiales.length; i++) {
+        if (lettreinitiales[i] == " * ") {
+          gagne = false;
+          break;
+        }
+      }
+
+      if (gagne) {
+        clearConsole();
+        sleep(Duration(seconds: 2));
+        afficherCadre();
+        print(
+          CenterText("🎉 Bravo! Tu as gagné! Le mot était: $motSecretActuel"),
+        );
+        sleep(Duration(seconds: 2));
         break;
       }
-    }
-    
-    if (gagne) {
+
+      // Demander une lettre au joueur
+      String? lettreProposee = prompt("Proposez une lettre: \t");
+
+      // Valider que c'est une seule lettre
+      while (lettreProposee == null || lettreProposee.length != 1) {
+        clearConsole();
+        print("Veuillez entrer une seule lettre.");
+        afficherCadre();
+        lettreProposee = prompt("Proposez une lettre: \t");
+      }
+
+      // Mettre à jour le jeu avec la lettre proposée
+      for (var i = 0; i < motSecretListe.length; i++) {
+        if (motSecretListe[i] == lettreProposee.toUpperCase()) {
+          updateLettre(lettreProposee);
+        }
+      }
+      // Afficher l'état actuel du jeu
       clearConsole();
       afficherCadre();
-      print(CenterText("🎉 Bravo! Tu as gagné! Le mot était: $motSecretActuel"));
-      break;
     }
-    
-    // Demander une lettre au joueur
-    String? lettreProposee = prompt("Proposez une lettre: \t");
-    
-    // Valider que c'est une seule lettre
-    while (lettreProposee == null || lettreProposee.length != 1) {
+
+    // Si le score atteint 0, le joueur a perdu
+    if (Score == 0) {
+      print(CenterText("💀 Perdu! Le mot était: $motSecretActuel"));
+    }
+  }
+
+  void LancerJeu() {
+    bool continuer = true;
+
+    while (continuer) {
       clearConsole();
-      print("Veuillez entrer une seule lettre.");
-      afficherCadre();
-      lettreProposee = prompt("Proposez une lettre: \t");
+      Menu();
+
+      String? choix = stdin.readLineSync();
+
+      if (choix == null || choix.isEmpty) {
+        print("Veuillez choisir une option valide s'il vous plait.");
+        continue;
+      }
+
+      switch (choix) {
+        case "1":
+          clearConsole();
+          DemarrerJeu();
+          sleep(Duration(seconds: 2));
+          LogiqueJeu();
+          break;
+
+        case "2":
+          clearConsole();
+          print(CenterText("=== TUTORIEL ==="));
+          print(CenterText("Bienvenue dans Hangman!"));
+          print(CenterText("Vous devez deviner un mot de 5 lettres."));
+          print(CenterText("Vous avez 5 tentatives."));
+          print(CenterText("Entrez une lettre à chaque tour."));
+          print(CenterText("Si la lettre est correcte, elle s'affiche."));
+          print(CenterText("Si elle est fausse, vous perdez une tentative."));
+          print(CenterText("Bonne chance!"));
+          sleep(Duration(seconds: 5));
+          break;
+
+        case "3":
+          clearConsole();
+          print(CenterText("Au revoir!"));
+          sleep(Duration(seconds: 1));
+          continuer = false;
+          break;
+
+        default:
+          print(
+            "Option invalide. Veuillez choisir une option valide (1, 2 ou 3).",
+          );
+          sleep(Duration(seconds: 2));
+      }
     }
-    
-    // Mettre à jour le jeu avec la lettre proposée
-    updateLettre(lettreProposee);
-    
-    // Afficher l'état actuel du jeu
-    clearConsole();
-    afficherCadre();
-  }
-  
-  // Si le score atteint 0, le joueur a perdu
-  if (Score == 0) {
-    print(CenterText("💀 Perdu! Le mot était: $motSecretActuel"));
   }
 }
-}
+
 void main() {
-  Game promptManager = Game();
-
-  bool continuer = true;
-
-  while (continuer) {
-    promptManager.clearConsole();
-    promptManager.Menu();
-
-    String? choix = stdin.readLineSync();
-
-    if (choix == null || choix.isEmpty) {
-      print("Veuillez choisir une option valide s'il vous plait.");
-      continue;
-    }
-
-    switch (choix) {
-      case "1":
-        promptManager.clearConsole();
-        promptManager.DemarrerJeu();
-        sleep(Duration(seconds: 2));
-        promptManager.LogiqueJeu();
-        break;
-
-      case "2":
-        promptManager.clearConsole();
-        print(promptManager.CenterText("=== TUTORIEL ==="));
-        print(promptManager.CenterText("Bienvenue dans Hangman!"));
-        print(
-          promptManager.CenterText("Vous devez deviner un mot de 5 lettres."),
-        );
-        print(promptManager.CenterText("Vous avez 5 tentatives."));
-        print(promptManager.CenterText("Entrez une lettre à chaque tour."));
-        print(
-          promptManager.CenterText(
-            "Si la lettre est correcte, elle s'affiche.",
-          ),
-        );
-        print(
-          promptManager.CenterText(
-            "Si elle est fausse, vous perdez une tentative.",
-          ),
-        );
-        print(promptManager.CenterText("Bonne chance!"));
-        sleep(Duration(seconds: 5));
-        break;
-
-      case "3":
-        promptManager.clearConsole();
-        print(promptManager.CenterText("Au revoir!"));
-        sleep(Duration(seconds: 1));
-        continuer = false;
-        break;
-
-      default:
-        print(
-          "Option invalide. Veuillez choisir une option valide (1, 2 ou 3).",
-        );
-        sleep(Duration(seconds: 2));
-    }
-  }
+  Game Jeu = new Game();
+  Jeu.LancerJeu();
 }
