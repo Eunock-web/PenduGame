@@ -330,8 +330,63 @@ void LogiqueJeu() {
 }
 void main() {
   Game promptManager = Game();
-  promptManager.Menu();
-  promptManager.GestionMenu();
-  promptManager.afficherCadre();
-  promptManager.LogiqueJeu();
+
+  bool continuer = true;
+
+  while (continuer) {
+    promptManager.clearConsole();
+    promptManager.Menu();
+
+    String? choix = stdin.readLineSync();
+
+    if (choix == null || choix.isEmpty) {
+      print("Veuillez choisir une option valide s'il vous plait.");
+      continue;
+    }
+
+    switch (choix) {
+      case "1":
+        promptManager.clearConsole();
+        promptManager.DemarrerJeu();
+        sleep(Duration(seconds: 2));
+        promptManager.LogiqueJeu();
+        break;
+
+      case "2":
+        promptManager.clearConsole();
+        print(promptManager.CenterText("=== TUTORIEL ==="));
+        print(promptManager.CenterText("Bienvenue dans Hangman!"));
+        print(
+          promptManager.CenterText("Vous devez deviner un mot de 5 lettres."),
+        );
+        print(promptManager.CenterText("Vous avez 5 tentatives."));
+        print(promptManager.CenterText("Entrez une lettre à chaque tour."));
+        print(
+          promptManager.CenterText(
+            "Si la lettre est correcte, elle s'affiche.",
+          ),
+        );
+        print(
+          promptManager.CenterText(
+            "Si elle est fausse, vous perdez une tentative.",
+          ),
+        );
+        print(promptManager.CenterText("Bonne chance!"));
+        sleep(Duration(seconds: 5));
+        break;
+
+      case "3":
+        promptManager.clearConsole();
+        print(promptManager.CenterText("Au revoir!"));
+        sleep(Duration(seconds: 1));
+        continuer = false;
+        break;
+
+      default:
+        print(
+          "Option invalide. Veuillez choisir une option valide (1, 2 ou 3).",
+        );
+        sleep(Duration(seconds: 2));
+    }
+  }
 }
