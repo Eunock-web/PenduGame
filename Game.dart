@@ -272,10 +272,66 @@ List<String> updateLettre(String lettre) {
     }
   }
 
+void LogiqueJeu() {
+  // Générer le mot secret une seule fois au début
+  motSecretActuel = MotDevine();
+  motSecretListe = ListMotdevine(motSecretActuel);
+  
+  // Réinitialiser les variables du jeu
+  lettreinitiales = [" * ", " * ", " * ", " * ", " * "];
+  lettresProposees = [];
+  Score = 5;
+  
+  // Afficher le cadre initial
+  afficherCadre();
+  
+  // Boucle principale du jeu
+  while (Score > 0) {
+    // Vérifier si le joueur a gagné (tous les * sont remplacés)
+    bool gagne = true;
+    for (var i = 0; i < lettreinitiales.length; i++) {
+      if (lettreinitiales[i] == " * ") {
+        gagne = false;
+        break;
+      }
+    }
+    
+    if (gagne) {
+      clearConsole();
+      afficherCadre();
+      print(CenterText("🎉 Bravo! Tu as gagné! Le mot était: $motSecretActuel"));
+      break;
+    }
+    
+    // Demander une lettre au joueur
+    String? lettreProposee = prompt("Proposez une lettre: \t");
+    
+    // Valider que c'est une seule lettre
+    while (lettreProposee == null || lettreProposee.length != 1) {
+      clearConsole();
+      print("Veuillez entrer une seule lettre.");
+      afficherCadre();
+      lettreProposee = prompt("Proposez une lettre: \t");
+    }
+    
+    // Mettre à jour le jeu avec la lettre proposée
+    updateLettre(lettreProposee);
+    
+    // Afficher l'état actuel du jeu
+    clearConsole();
+    afficherCadre();
+  }
+  
+  // Si le score atteint 0, le joueur a perdu
+  if (Score == 0) {
+    print(CenterText("💀 Perdu! Le mot était: $motSecretActuel"));
+  }
+}
 }
 void main() {
   Game promptManager = Game();
   promptManager.Menu();
   promptManager.GestionMenu();
   promptManager.afficherCadre();
+  promptManager.LogiqueJeu();
 }
