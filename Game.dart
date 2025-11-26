@@ -6,9 +6,14 @@ class Game {
   String ANSI_HOME_CURSOR =
       '\x1B[H'; //Deplacer curseur à la position d'origine(Hat-Gauche)
   String ANSI_BOLD = '\x1B[1m'; //Texte en gras
-  final String nomJeu = "HANGMAN";
+  final String nomJeu = "HANGMAN GAME";
   String nomJoueur = "";
-  List<String> lettres = ["", "", "", "", ""];
+  List<String> lettreinitiales = [" * ", " * ", " * ", " * ", " * "];
+  static int Score = 5;
+  String message = " ";
+    String motSecretActuel = "";
+  List<String> motSecretListe = [];
+  List<String> lettresProposees = [];
 
   //Fonction pour effacer la console
   void clearConsole() {
@@ -62,11 +67,16 @@ class Game {
    * Cette fonction genere un mot devine de 5 lettres
    * @return String
    */
-  String MotDevine(){
+  String MotDevine() {
+    String mot = " ";
     for (var i = 0; i < 5; i++) {
-      lettres[i] = genererLettreAleatoire(majuscule: true);
+      mot += genererLettreAleatoire(majuscule: true);
     }
-    return lettres.join();
+    return mot;
+  }
+
+  List<String> ListMotdevine(String motsimple) {
+    return motsimple.split("");
   }
 
   //Fonction pour generer une lettre aleatoire
@@ -76,28 +86,55 @@ class Game {
    * @return String
    */
   String genererLettreAleatoire({bool majuscule = false}) {
-  final random = Random();
-  int min, max;
-  
-  if (majuscule) {
-    min = 65; // 'A'
-    max = 90; // 'Z'
-  } else {
-    min = 97; // 'a'
-    max = 122; // 'z'
-  }
-  
-  // La fonction nextInt(n) génère un nombre entre 0 (inclus) et n (exclus).
-  // Donc, pour une plage de 26 lettres, on utilise random.nextInt(26).
-  final codeASCII = min + random.nextInt(max - min + 1);
-  
-  return String.fromCharCode(codeASCII);
-}
+    final random = Random();
+    int min, max;
 
-  void updateLettre(String lettre){
-    
+    if (majuscule) {
+      min = 65; // 'A'
+      max = 90; // 'Z'
+    } else {
+      min = 97; // 'a'
+      max = 122; // 'z'
+    }
+
+    // La fonction nextInt(n) génère un nombre entre 0 (inclus) et n (exclus).
+    // Donc, pour une plage de 26 lettres, on utilise random.nextInt(26).
+    final codeASCII = min + random.nextInt(max - min + 1);
+
+    return String.fromCharCode(codeASCII);
   }
 
+  /**
+   * Cette fonction met a jour la lettre deviné dans le cadre du jeu
+   * @param lettre
+   * @return String
+   */
+List<String> updateLettre(String lettre) {
+    // Convertir la lettre en majuscule pour comparaison
+    String lettreUpperCase = lettre.toUpperCase();
+
+    bool lettreValide = false;
+
+    // Vérifier si la lettre est dans le mot secret
+    for (var i = 0; i < motSecretListe.length; i++) {
+      if (motSecretListe[i] == lettreUpperCase) {
+        lettreinitiales[i] = lettreUpperCase;
+        lettreValide = true;
+      }
+    }
+
+    // Si la lettre n'a pas été trouvée, décrémenter le score
+    if (!lettreValide) {
+      Score = Score - 1;
+    }
+
+    // Ajouter la lettre à la liste des lettres proposées
+    if (!lettresProposees.contains(lettreUpperCase)) {
+      lettresProposees.add(lettreUpperCase);
+    }
+
+    return lettreinitiales;
+  }
   /**
    * Cette fonction demande le nom du joueur et l'enregistre dans une variable
    * @param nom
@@ -116,8 +153,52 @@ class Game {
     return nom;
   }
 
+  void afficherCadre() {
+    print(
+      CenterText(
+        " ----------------------------------------------------------------------------------------------------------------",
+      ),
+    );
+    print(
+      CenterText(
+        "|                                                                                                                |",
+      ),
+    );
+    print(
+      CenterText(
+        "|                                                                                                                |",
+      ),
+    );
+    print(
+      CenterText(
+        "   ${lettreinitiales[0]} ${lettreinitiales[1]} ${lettreinitiales[2]} ${lettreinitiales[3]} ${lettreinitiales[4]}  ",
+      ),
+    );
+    print(
+      CenterText(
+        "|                                                                                                                |",
+      ),
+    );
+    print(
+      CenterText(
+        "|                                                                                                                |",
+      ),
+    );
+    print(
+      CenterText(
+        " ----------------------------------------------------------------------------------------------------------------",
+      ),
+    );
+
+    afficherScore();
+  }
+
+  void afficherScore() {
+    print(CenterText("Score : $Score"));
+  }
+
   /**
-   * Fonction pour afficher le Jeux complet
+   * Fonction pour afficherbgvgv le Jeux complet
    */
   void afficherJeux() {
     clearConsole();
@@ -191,27 +272,10 @@ class Game {
     }
   }
 
-  void LogiqueJeu() {
-    prompt("Deviner la lettre");
-    String? lettre = stdin.readLineSync();
-    if (lettre == null) {
-      print("Veuillez entrez une lettre valide");
-    }else{
-        String lettredeviner = lettre.toUpperCase();
-
-          for( lettres in lettre ){
-            if( lettre == lettredeviner ){
-              updateLettre(lettre);
-            }
-          }
-    }
-  }
-
 }
-
 void main() {
   Game promptManager = Game();
-
   promptManager.Menu();
   promptManager.GestionMenu();
+  promptManager.afficherCadre();
 }
