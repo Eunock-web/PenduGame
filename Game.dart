@@ -274,6 +274,9 @@ class Game {
     }
   }
 
+  /**
+   * Fonction pour gerer la logique du jeu
+   */
 void LogiqueJeu() {
     // Générer le mot secret une seule fois au début
     motSecretActuel = "LIGHT".toUpperCase();
@@ -304,7 +307,7 @@ void LogiqueJeu() {
         sleep(Duration(seconds: 2));
         afficherCadre();
         print(
-          CenterText("🎉 Bravo! Tu as gagné! Le mot était: $motSecretActuel"),
+          CenterText(" GG! Tu as gagné! Le mot était: $motSecretActuel"),
         );
         sleep(Duration(seconds: 3));
         partieEnCours = false;
@@ -332,10 +335,14 @@ void LogiqueJeu() {
 
     // Si le score atteint 0, le joueur a perdu
     if (Score == 0) {
-      print(CenterText("💀 Perdu! Le mot était: $motSecretActuel"));
+      print(CenterText(" Ah blo Dohii! Le mot était: $motSecretActuel"));
       sleep(Duration(seconds: 3));
     }
   }
+  
+  /**
+   * Cette fonction permet de lancer completement le jeu
+   */
   void LancerJeu() {
     bool continuer = true;
 
@@ -388,7 +395,3 @@ void LogiqueJeu() {
   }
 }
 
-void main() {
-  Game Jeu = new Game();
-  Jeu.LancerJeu();
-}
