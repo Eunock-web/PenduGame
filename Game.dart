@@ -274,7 +274,7 @@ class Game {
     }
   }
 
-  void LogiqueJeu() {
+void LogiqueJeu() {
     // Générer le mot secret une seule fois au début
     motSecretActuel = "LIGHT".toUpperCase();
     motSecretListe = ListMotdevine(motSecretActuel);
@@ -288,7 +288,8 @@ class Game {
     afficherCadre();
 
     // Boucle principale du jeu
-    for (int i = 0; i < Score; i++) {
+    bool partieEnCours = true;
+    while (partieEnCours && Score > 0) {
       // Vérifier si le joueur a gagné (tous les * sont remplacés)
       bool gagne = true;
       for (var i = 0; i < lettreinitiales.length; i++) {
@@ -305,7 +306,8 @@ class Game {
         print(
           CenterText("🎉 Bravo! Tu as gagné! Le mot était: $motSecretActuel"),
         );
-        sleep(Duration(seconds: 2));
+        sleep(Duration(seconds: 3));
+        partieEnCours = false;
         break;
       }
 
@@ -321,11 +323,8 @@ class Game {
       }
 
       // Mettre à jour le jeu avec la lettre proposée
-      for (var i = 0; i < motSecretListe.length; i++) {
-        if (motSecretListe[i] == lettreProposee.toUpperCase()) {
-          updateLettre(lettreProposee);
-        }
-      }
+      updateLettre(lettreProposee);
+
       // Afficher l'état actuel du jeu
       clearConsole();
       afficherCadre();
@@ -334,9 +333,9 @@ class Game {
     // Si le score atteint 0, le joueur a perdu
     if (Score == 0) {
       print(CenterText("💀 Perdu! Le mot était: $motSecretActuel"));
+      sleep(Duration(seconds: 3));
     }
   }
-
   void LancerJeu() {
     bool continuer = true;
 
