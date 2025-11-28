@@ -7,115 +7,66 @@ class HangmanGame {
   Set<String> guessedLetters = {};
   int lives;
   late String displayedWord;
-  bool isGameOver = false;
-  bool isWinner = false;
+  bool isGameOver = false, isWinner = false;
 
   HangmanGame({required this.words, this.lives = 6}) {
     startGame();
   }
 
   void startGame() {
-    final rnd = Random();
-    secretWord = words[rnd.nextInt(words.length)].toUpperCase();
-    guessedLetters.clear();
-    isGameOver = false;
-    isWinner = false;
-    displayedWord = _maskWord();
+    secretWord = words[Random().nextInt(words.length)].toUpperCase();
+    displayedWord = List.filled(secretWord.length, '_').join();
   }
 
-  String _maskWord() {
-    return secretWord.split('').map((c) => c == ' ' ? ' ' : '_').join('');
-  }
-
-  void guessLetter(String input) {
-    final letter = input.toUpperCase();
-
-    if (isGameOver) return;
-    if (letter.length != 1) return;
-    if (!RegExp(r'^[A-Z]$').hasMatch(letter)) return;
-    if (guessedLetters.contains(letter)) return;
+  void guessLetter(String letter) {
+    letter = letter.toUpperCase();
+    if (guessedLetters.contains(letter) || isGameOver) return;
 
     guessedLetters.add(letter);
 
     if (secretWord.contains(letter)) {
-      _revealLetters(letter);
+      updateDisplayedWord();
+      if (!displayedWord.contains('_')) {
+        isWinner = true;
+        isGameOver = true;
+      }
     } else {
-      lives -= 1;
-    }
-
-    _checkGameStatus();
-  }
-
-  void _revealLetters(String letter) {
-    final secretChars = secretWord.split('');
-    final disp = displayedWord.split('');
-    for (var i = 0; i < secretChars.length; i++) {
-      if (secretChars[i] == letter) disp[i] = letter;
-    }
-    displayedWord = disp.join('');
-  }
-
-  void _checkGameStatus() {
-    if (!displayedWord.contains('_')) {
-      isWinner = true;
-      isGameOver = true;
-    } else if (lives <= 0) {
-      isWinner = false;
-      isGameOver = true;
+      lives--;
+      if (lives == 0) isGameOver = true;
     }
   }
 
-  String getDisplayedWord() {
-    return displayedWord.split('').join(' ');
-  }
-
-  void resetGame() {
-    lives = 6;
-    startGame();
+  void updateDisplayedWord() {
+    displayedWord = secretWord
+        .split('')
+        .map((c) => guessedLetters.contains(c) ? c : '_')
+        .join();
   }
 }
 
 void main() {
- final words = [
-  'DARTS',
-  'PLAGE',
-  'NAGER',
-  'MAISON',
-  'TABLE',
-  'CHAIR',
-'RIVER',
-];
+  final game = HangmanGame(
+    words: ['PLAGE', 'TABLE', 'MAISON', 'RIVRE', 'NAGER'],
+    lives: 6,
+  );
 
-  final game = HangmanGame(words: words, lives: 6);
+  while (!game.isGameOver) {
+    print("\nMot : ${game.displayedWord}");
+    print("Vies restantes : ${game.lives}");
+    stdout.write("Lettre : ");
+    String input = stdin.readLineSync() ?? '';
 
-  while (true) {
-    print('\nMot : ${game.getDisplayedWord()}');
-    print('Vies restantes : ${'❤' * game.lives}${'🖤' * (6 - game.lives)}');
-    print('Lettres utilisées : ${game.guessedLetters.join(", ")}');
-
-    if (game.isGameOver) {
-      if (game.isWinner) {
-        print('\n🎉 BRAVO ! Tu as trouvé le mot : ${game.secretWord}');
-      } else {
-        print('\n💀 PERDU ! Le mot était : ${game.secretWord}');
-      }
-
-      stdout.write('\nRejouer (O/N) : ');
-      final reponse = stdin.readLineSync();
-      if (reponse != null && reponse.toUpperCase() == 'O') {
-        game.resetGame();
-        continue;
-      } else {
-        print('\nMerci d\'avoir joué !');
-        break;
-      }
+    if (input.isEmpty || input.length > 1) {
+      print("➡️ Entre une seule lettre !");
+      continue;
     }
 
-    stdout.write('\nTape une lettre : ');
-    final input = stdin.readLineSync();
-    if (input == null || input.isEmpty) continue;
+    game.guessLetter(input);
+  }
 
-    game.guessLetter(input[0]);
+  if (game.isWinner) {
+    print("\n🎉 Bravo ! Tu as gagné ! Le mot était : ${game.secretWord}");
+  } else {
+    print("\n💀 Tu as perdu ! Le mot était : ${game.secretWord}");
+  }
 }
-}
-
