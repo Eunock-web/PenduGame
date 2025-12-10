@@ -1,4 +1,3 @@
-// main.dart
 import 'dart:io';
 // Importe la classe Pendu à partir du fichier créé
 import 'pendu.dart'; 

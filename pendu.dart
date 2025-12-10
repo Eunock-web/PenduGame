@@ -1,8 +1,6 @@
-// hangman_game.dart
 import 'dart:io';
 import 'dart:math';
 
-/// Classe représentant le jeu du Pendu.
 class Pendu {
   final String motADeviner;
   Set<String> lettresProposees = {};
@@ -16,7 +14,10 @@ class Pendu {
     'DEVELOPPEUR',
     'ORDINATEUR',
     'MODULAIRE',
-    'POO'
+    'POO',
+    'HELLVERSE',
+    'HASBINHOTEL',
+    'GAMING'
   ];
 
   /// Constructeur pour démarrer le jeu.
